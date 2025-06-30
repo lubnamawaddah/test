@@ -7,8 +7,19 @@ import streamlit as st
 df = pd.read_csv("dashboard/main_data.csv")
 df['date'] = pd.to_datetime(df['date'])
 
-# Filter data jika perlu (sementara ini ambil semua)
-filtered_day_df = df.copy()
+# Sidebar filter tanggal
+st.sidebar.header("🔍 Filter")
+min_date = df['date'].min()
+max_date = df['date'].max()
+start_date, end_date = st.sidebar.date_input(
+    "Pilih rentang tanggal",
+    [min_date, max_date],
+    min_value=min_date,
+    max_value=max_date
+)
+
+# Filter data berdasarkan tanggal
+filtered_day_df = df[(df['date'] >= pd.to_datetime(start_date)) & (df['date'] <= pd.to_datetime(end_date))]
 
 # Judul dashboard
 st.title("🚲 Bike Rental Dashboard")
@@ -91,4 +102,4 @@ plt.yticks(fontsize=10)
 plt.tight_layout()
 st.pyplot(plt)
 
-st.markdown("")
+st.markdown("---")
